@@ -1,0 +1,27 @@
+<?php
+
+require __DIR__ . '/api-doc-generate/src/ApiDoc.php';
+
+$obj = new ApiDoc\ApiDoc();
+
+//直接生成文档，采用程序默认配置
+//$obj->build();
+
+$act = isset($argv[1]) ? $argv[1] : '.md';
+
+//根据配置的参数生成文档
+$config = [
+    'allowed_file' => ".php",  //生成注释文档的文件后缀名称
+    'build_path' => __DIR__ . "/test",  //控制器目录
+    'vender_path' => __DIR__ . "/doc/",  //生成文档目录
+    'template' => 'default',  //生成文档所使用的模版	
+    'template_ext' => $act,  //生成文档的后缀名称	
+    'is_generate' => true,  //是否生成文档
+    'is_upload' => true,   //是否上传showdoc
+];
+
+$obj->set($config)->build();
+
+echo "生成成功";
+
+
