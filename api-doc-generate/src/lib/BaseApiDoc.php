@@ -8,6 +8,12 @@
 namespace lib\base;
 
 class ApiDocBase{
+
+	private $api_key = "321bddb5c4e5f831d362806947b4b9161088730030";
+
+	private $api_token = "9011617a2895eab3a0dd586bfab6cfd2902613115";
+
+	private $api_url = "http://192.168.0.254:4999/server/index.php?s=/api/item/updateByApi";
     
     /**
      * Annotation cache
@@ -134,9 +140,9 @@ class ApiDocBase{
 					//上传至showdoc
 					if($this->config['is_upload']){
                         $md_data = $this->generateItemPage($sub_file, $annotion, $object['comment']['comment']['group']);
-					    $data = ["api_key"=>"8c991a229ebdbe67a6bad92702a78ff534422485","api_token"=>"1fb9053ae7d3dc07f34666a5c40dfac6880070744","cat_name"=>"",
+					    $data = ["api_key"=>$this->api_key,"api_token"=>$this->api_token,"cat_name"=>"",
 					    "cat_name_sub"=>"","page_title"=>$annotion["comment"]["ApiDescription"][0],"page_content"=>$md_data,"s_number"=>""];
-					    $res = $this->requestApi("https://www.showdoc.cc/server/api/item/updateByApi",$data);
+					    $res = $this->requestApi($this->api_url,$data);
 					}
 				}
 			}
@@ -363,9 +369,13 @@ class ApiDocBase{
 	 */
 	protected function getMethodAnnotations($className)
 	{
-		//print_r($className->getMethods());
 		foreach ($className->getMethods() as $object) {
-			if($object->name == 'get_instance' || $object->name == $className->getConstructor()->name) continue;
+			if(isset($className->getConstructor()->name)){
+				if($object->name == $className->getConstructor()->name){
+					continue;
+				}
+			}
+			if($object->name == 'get_instance') continue;
 			$method = new \ReflectionMethod($object->class, $object->name);
 			//print_r($method);
 			$this->annotationCache[$object->class]['methods'][$object->name] = $this->getMethodAnnotation($method);
